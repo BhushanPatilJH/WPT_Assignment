@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" ></script>
+    <title>Assignment_01JQuery</title>
+    
+    <script>
+        $(()=>{
+            console.log("Event click")
+            let array=[21,22,23,24,25,26,27,28,29,30];
+            document.querySelector("#add").disabled=true;
+            document.querySelector("#edit").disabled=true;
+            document.querySelector("#delete").disabled=true;
+            document.querySelector("#viewall").disabled=false;
+            document.querySelector("#odd").disabled=false;
+
+            function showArrayElement(){
+                let content="";
+                for(let i=0; i<array.length; i++){
+                    content+=array[i]+" ";
+                }
+                $("#show").html(content);
+
+            }
+            function showOddElement(){
+                let content="";
+                for(let i=0; i<array.length; i++){
+                    if(i%2 != 0){
+                        content+=i+"=>"+array[i]+" "+"<br>";
+                    }
+                }
+                $("#show").html(content);
+            }
+
+
+            function check(number){
+                console.log("function block");
+                for(let i=0;i<array.length;i++){
+                    
+                    if(array[i] == number){
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function add(number1){
+                for(let i=0;i<array.length;i++){
+                    if(array[i] == number){
+                        return false;
+                    }
+                }
+
+                array.push(number1);
+                return true;
+            }
+
+            function editLogic(number){
+                for(let i=0;i<array.length;i++){
+                    if(array[i] == number){
+                        console.log("inside the if block")
+                        let num=prompt();
+                        array[i]=num;
+                        return true;
+                    }
+                   
+                }
+                return false;
+            }
+
+            function deleteLogic(number){
+                for(let i=0;i<array.length;i++){
+                    if(array[i] == number){
+                       array.splice(i,number);
+                        return true;
+                    }
+                   
+                }
+                return false;
+            }
+
+            $("#number").blur(()=>{
+                console.log("blur event click");
+                let number1=$("#number").val();
+                let output=check(number1);
+              
+                if(output){
+                    document.querySelector("#edit").disabled=false;
+                    document.querySelector("#delete").disabled=false;
+                    document.querySelector("#add").disabled=true;
+                    document.querySelector("#viewall").disabled=true;
+                    document.querySelector("#odd").disabled=true;
+                    $("#message").html("number found");  
+                }else{
+                    document.querySelector("#add").disabled=false;
+                    document.querySelector("#edit").disabled=true;
+                    document.querySelector("#delete").disabled=true; 
+                    document.querySelector("#viewall").disabled=true;
+                    document.querySelector("#odd").disabled=true; 
+                    $("#message").html("number Not found");
+                }
+
+
+            })
+
+            $("#add").click(()=>{
+                console.log("add button click")
+                let number1=$("#number").val();
+                let output=add(number1);
+                if(output){
+                    $("#message").html("number added successfully");
+                    document.querySelector("#add").disabled=true;
+                    document.querySelector("#viewall").disabled=false;
+                    document.querySelector("#odd").disabled=false;
+                }
+            })
+
+            $("#edit").click(()=>{
+                console.log("Edit click");
+                let number=$("#number").val();
+                let output=editLogic(number);
+                
+                if(output){
+                    document.querySelector("#edit").disabled=true;
+                    document.querySelector("#delete").disabled=true;
+                    document.querySelector("#viewall").disabled=false;
+                    document.querySelector("#odd").disabled=false;
+                    $("#message").html("number  replace Successfully!!!"); 
+                }
+
+            })
+
+            $("#delete").click(()=>{
+                console.log("Delete button click");
+                let number=$("#number").val();
+                let output=deleteLogic(number);
+                console.log(output);
+                if(output){
+                    $("#message").html("Number  deleted Successfully!!!"); 
+                    document.querySelector("#edit").disabled=true;
+                    document.querySelector("#delete").disabled=true;
+                    document.querySelector("#viewall").disabled=false;
+                    document.querySelector("#odd").disabled=false;
+                }
+
+            })
+            $("#viewall").click(()=>{
+                console.log("Inside the viewall");
+                showArrayElement();
+            })
+            $("#odd").click(()=>{
+                showOddElement();
+            })
+
+
+
+
+        })
+
+    </script>
+</head>
+<body>
+    <input type="number" id="number"><span id="message">show content</span><br>
+    <input type="button" value="add" id="add">
+    <input type="button" value="edit" id="edit">
+    <input type="button" value="delete" id="delete">
+    <input type="button" value="viewall" id="viewall">
+    <input type="button" value="Show odd position" id="odd"><br>
+    <span id="show"></span>
+
+</body>
+</html>

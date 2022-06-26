@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment4</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" ></script>
+    <script>
+
+        class Employee {
+            constructor(empid, empname, email, deptid) {
+                this.empid = empid;
+                this.empname = empname;
+                this.email = email;
+                this.deptid = deptid;
+
+            }
+        }
+
+        class Logic {
+            constructor() {
+
+                this.arr = [new Employee(1, "bhushan", "bhushan@gmail.com", 1),
+                new Employee(2, "chaitanya", "chaitanya@gmail.com", 1),
+                new Employee(3, "aniket", "aniket@gmail.com", 2),
+                new Employee(4, "ankita", "ankita@gmail.com", 2),
+                new Employee(5, "chandrakant", "chandrakant@gmail.com", 1)];
+            }
+
+            getItemDetailsLogic(empid) {
+
+                let output = { result: false, empdetails: {} };
+                for (let i = 0; i < this.arr.length; i++) {
+                    if (this.arr[i].empid == empid) {
+                        output.result = true;
+                        output.empdetails = this.arr[i];
+                        break;
+                    }
+
+                }
+                return output;
+            }
+
+            addItemDetailsLogic(obj) {
+                console.log(obj);
+                this.arr.push(obj);
+                $("#add").prop("disabled",true);
+                $("#msg").html("Employee is Added Successfully");
+                $("#viewall").prop("disabled",false);
+                $("#empname").val("");
+                $("#email").val("");
+                $("#deptid").val("");
+                $("#empid").val(""); 
+            }
+
+            modifyItemDetailsLogic() {
+                $("#msg").html("Only Email can be Updated");
+
+                let i;
+                for (i = 0; i < this.arr.length; i++) {
+                    if (this.arr[i].empid == parseInt(document.querySelector("#empid").value)) {
+                        this.arr[i].email = document.querySelector("#email").value;
+                        break;
+                    }
+                }
+                $("#msg").html("Employee Email is Modified Successfully");
+            }
+
+            removeItemDetailsLogic() {
+                for (let i = 0; i < this.arr.length; i++) {
+                    if (this.arr[i].empid == document.querySelector("#empid").value) {
+                        this.arr.splice(i, 1);
+                        break;
+                    }
+                }
+               $("#empid").val("");
+                $("#empname").val("");
+                $("#email").val("");
+                $("#deptid").val("");
+                $("#msg").html("Employee details is Deleted Successfully");
+            }
+
+            viewall() {
+                let out = [];
+                for (let i = 0; i < this.arr.length; i++) {
+                    out[i] = "[ " + this.arr[i].empid + "," + this.arr[i].empname + "," + this.arr[i].email + "," + this.arr[i].deptid + "]";
+                }
+                $("#array").html("[ " + out + " ]");
+            }
+            buttonViewer(outputt) {
+
+                if (outputt.result == true) {
+                    
+                    $("#empname").val(outputt.empdetails.empname);
+                    $("#email").val(outputt.empdetails.email);
+                    $("#deptid").val(outputt.empdetails.deptid);
+
+                    $("#add").prop("disabled",true);
+                    $("#modify").prop("disabled",false);
+                    $("#remove").prop("disabled",false);
+                    $("#viewall").prop("disabled",false);
+                    $("#dept").prop("disabled",true);
+                    $("#msg").html("Employee is present in Array");
+                }
+                else {
+                    
+                    $("#empname").val("");
+                    $("#email").val("");
+                    $("#deptid").val("");
+                    $("#add").prop("disabled",false);
+                    $("#modify").prop("disabled",true);
+                    $("#remove").prop("disabled",true);
+                    $("#viewall").prop("disabled",true);
+                    $("#dept").prop("disabled",true);
+                    $("#msg").html("Employee is not present in Array");
+                }
+            }
+
+        }
+       
+        $( () => {
+
+            let logic = new Logic();
+            console.log(logic.arr);
+            console.log(logic.arr[0].empname);
+           
+            $("#empid").blur( () => {
+                let empid = $("#empid").val();
+
+                let outputt = logic.getItemDetailsLogic(empid);
+                console.log(outputt);
+                logic.buttonViewer(outputt);
+            });
+          
+            let add = document.querySelector("#add");
+            add.addEventListener('click', () => {
+
+                let empid = parseInt($("#empid").val());
+                let empname = $("#empname").val();
+                let email = $("#email").val();
+                let deptid = parseInt($("#deptid").val());
+                let obj = { empid, empname, email, deptid };
+
+                logic.addItemDetailsLogic(obj);
+
+            });
+            
+
+           $("#modify").click( () => {
+                logic.modifyItemDetailsLogic();
+
+            });
+
+            
+
+            $("#remove").click( () => {
+                logic.removeItemDetailsLogic();
+
+            });
+            
+
+            $("#viewall").click( () => {
+
+                logic.viewall();
+
+            });
+
+
+
+
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Array of Employees</h1>
+    <input type="text" id="empid" placeholder="Employee ID">
+    <span id="msg">Message will appear here</span>
+    <br><br>
+    <input type="text" id="empname" placeholder="Employee Name"><br><br>
+    <input type="text" id="email" placeholder="Employee Email"><br><br>
+    <input type="text" id="deptid" placeholder="Employee Department ID"><br><br>
+
+    <button id="add" disabled>Add</button>
+    <button id="modify" disabled>Modify</button>
+    <button id="remove" disabled>Remove</button>
+    <button id="viewall" disabled>View All</button>
+    <button id="dept" disabled>View on Deptid</button>
+
+    <hr>
+    <p> List of Emoloyee : <span id="array">Array will display here after pressing View All</span></p>
+
+</body>
+
+</html>

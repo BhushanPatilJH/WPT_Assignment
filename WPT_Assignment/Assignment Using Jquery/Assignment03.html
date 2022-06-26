@@ -1,0 +1,321 @@
+<html>
+	
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment3</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" ></script>
+	<script>
+
+		class ItemStatus {
+			constructor(status, itemobject) {
+				this.status = false;
+				this.itemobject = itemobject;
+			}
+		};
+
+
+		class Item {
+			constructor(itemno, itemprice, qty) {
+				this.itemno = itemno;
+				this.itemprice = itemprice;
+				this.qty = qty;
+			}
+			setItemDetails(itemno, itemprice, qty) {
+				this.itemno = itemno;
+				this.itemprice = itemprice;
+				this.qty = qty;
+			}
+			getItemDetails() {
+				return this.itemno + "--" + this.itemprice + "--" +
+					this.qty;
+			}
+		}
+
+
+
+
+
+
+
+		class Logic {
+
+			constructor() {
+
+				this.items = [new Item(1, 4, 5),
+				new Item(2, 6, 7),
+				new Item(3, 9, 10),
+				new Item(4, 12, 13)];
+			}
+			getItemDetailsLogic(itemno) {
+				let output = new ItemStatus(false, {});
+				for (let i = 0; i < this.items.length; i++) {
+					if (this.items[i].itemno == itemno) {
+						output.result = true;
+						output.itemdetails = this.items[i];
+						break;
+					}
+				}
+				return output;
+			}
+
+			updateItemDetailsLogic(updateditem) {
+				console.log(updateditem.itemno);
+				let output = false;
+				for (let i = 0; i < this.items.length; i++) {
+					if (this.items[i].itemno == updateditem.itemno) {
+
+						this.items[i].setItemDetails(updateditem.itemno, updateditem.itemprice, updateditem.qty);
+						output = true;
+						break;
+					}
+				}
+				console.log("inside update function" + output);
+				return output;
+			}
+
+			addItemDetailsLogic(additem) {
+				console.log(additem);
+				let output = true;
+				for (let i = 0; i < this.items.length; i++) {
+					if (this.items[i].itemno == additem.itemno) {
+						output = false;
+						break;
+					}
+				}
+				if (true) {
+
+					this.items.push(new Item(additem.itemno, additem.itemprice, additem.qty));
+
+				}
+				console.log("inside add function" + output);
+				console.log(additem.itemno);
+				console.log(this.items);
+				console.log(this.items.length);
+				return output;
+			}
+
+			removeItemDetailsLogic(itemno) {
+				let output = false;
+				for (let i = 0; i < this.items.length; i++) {
+					if (this.items[i].itemno == itemno) {
+						this.items.splice(i, 1); 
+						output = true;
+						break;
+					}
+
+				}
+				console.log("inside delte function" + output);
+				return output;
+			}
+
+			getAllItems() {
+				return this.items;
+			}
+
+		}
+
+		$(() => {
+
+
+			let logic = new Logic();
+			showAllItems();
+
+
+			$("#itemno").blur( () => {
+				console.log("blur event");
+
+			
+				let itemno = $("#itemno").val();
+				console.log("input is" + itemno);
+				let output = logic.getItemDetailsLogic(itemno);
+				
+				if (output.result) {
+					$("#price").val() = output.itemdetails.itemprice;
+					$("#qty").val() = output.itemdetails.qty;
+					
+					$("#add").prop("disabled",true);
+
+					$("#update").prop("disabled",false);
+					$("#delete").prop("disabled",false);
+					$("#clear").prop("disabled",false);
+					$("#msg").html("item details found");
+
+				}
+				else {
+					console.log("no item was found");
+					$("#update").prop("disabled",true);
+					$("#add").prop("disabled",false);
+					$("#delete").prop("disabled",true);
+					$("#clear").prop("disabled",true);
+					$("#msg").html ("item no not found");
+					$("#price").val("");
+					$("#qty").val("");
+
+				}
+			});
+
+			$("#add").click( () => {
+
+
+				let input = {
+					itemno: parseInt($("#itemno").val()),
+					itemprice: parseInt($("#price").val()),
+					qty: parseInt($("#qty").val())
+				};
+
+				console.log(input);
+				let output = logic.addItemDetailsLogic(input);
+				
+				if (output) {
+					$("#msg").html("Added Successfully");
+					$("#update").prop("disabled",true);
+					$("#delete").prop("disabled",true);
+					$("#clear").prop("disabled",true);
+					$("#add").prop("disabled",true);
+
+					$("#itemno").val("");
+
+					$("#price").val("");
+					$("#qty").val("");
+
+				}
+				else {
+					$("#msg").html("Adding failed");
+
+					$("#update").prop("disabled",true);
+
+					$("#delete").prop("disabled",true);
+
+					$("#clear").prop("disabled",true);
+
+
+				}
+				showAllItems();
+				
+
+			});
+
+
+			$("#update").click( () => {
+
+				
+				let input = {
+					itemno: $("#itemno").val(),
+					itemprice: $("#price").val(),
+					qty: $("#qty").val()
+				};
+
+				console.log(input);
+				let output = logic.updateItemDetailsLogic(input);
+				
+				if (output) {
+					$("#msg").html("update suceeded");
+					$("#update").prop("disabled",true);
+					$("#delete").prop("disabled",true);
+					$("#clear").prop("disabled",true);
+					$("#itemno").val("");
+
+					$("#price").val("");
+					$("#qty").value("");
+
+				}
+				else {
+					$("#msg").html("update failed");
+
+					$("#update").prop("disabled",true);
+					$("#delete").prop("disabled",true);
+					$("#clear").prop("disabled",true);
+
+				}
+				showAllItems();
+			
+
+			});
+
+			$("#delete").click( () => {
+				let input = $("#itemno").val();
+
+				console.log(input);
+				let output = logic.removeItemDetailsLogic(input);
+			
+				console.log("after delte function" + output);
+
+				if (output) {
+					$("#msg").html("delete suceeded bravery");
+					$("#update").prop("disabled",true);
+					$("#delete").prop("disabled",true);
+					$("#clear").prop("disabled",true);
+					$("#itemno").val("");
+
+					$("#price").val("");
+					$("#qty").val("");
+
+				}
+				else {
+					$("#msg").html("delete failed");
+
+					$("#update").prop("disabled",true);
+					$("#delete").prop("disabled",true);
+					$("#clear").prop("disabled",true);
+				}
+				showAllItems();
+
+			});
+
+
+			$("#clear").click( () => {
+				console.log("clear event");
+				$("#itemno").val("");
+
+				$("#price").val("");
+				$("#qty").val("");
+				$("#update").prop("disabled",true);
+				$("#delete").prop("disabled",true);
+				$("#clear").prop("disabled",true);
+				$("#add").prop("disabled",true);
+			});
+
+
+
+			function showAllItems() {
+				console.log("show all items");
+
+
+				let output = logic.getAllItems();
+
+
+
+				let msg = "";
+				for (let i = 0; i < output.length; i++) 
+					msg += "<Br/>" + output[i].itemno + " --- " + output[i].itemprice +
+						"--" + output[i].qty;
+
+				$("#contents").html(msg);
+
+
+			}
+
+		});
+
+	</script>
+	<style>
+	</style>
+</head>
+
+<body>
+	<h1> Array of Items </h1>
+	<hr />
+	<input type="text" id="itemno" placeholder="itemno " /> <span id="msg"> what happened</span>
+	<Br /><input type="text" id="price" placeholder="price " />
+	<Br /><input type="text" id="qty" placeholder="qty " />
+	<Br /><button id="add" disabled> Add item</button>
+	<button id="update" disabled> update item</button>
+	<button id="delete" disabled> delete item (courageous) </button>
+	<button id="clear" disabled> clear all boxes </button>
+	<hr />
+	<p id="contents"> here one day we will show contents </p>
+</body>
+
+</html>

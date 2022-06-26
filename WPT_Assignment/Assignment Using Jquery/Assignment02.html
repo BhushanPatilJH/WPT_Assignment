@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02JQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" ></script>
+    <Script>
+        $(()=>{
+            console.log("dom Loaded")
+            employee=[  {empno:10, ename:"Amit Kumar", email:"amit@gmail.com", deptno:"S01"},
+                        {empno:11, ename:"Anant Kumar", email:"anant@gmail.com", deptno:"E01"},
+                        {empno:12, ename:"Aniket Kumar", email:"aniket@gmail.com", deptno:"C01"},
+                        {empno:13, ename:"Anurag Manjramkar", email:"anurag@gmail.com", deptno:"M01"},
+                        {empno:14, ename:"Ankita adapurkar", email:"ankita@gmail.com", deptno:"I01"},
+                        {empno:15, ename:"Atul Patil", email:"atul@gmail.com", deptno:"M02"},
+                        {empno:16, ename:"Bhushan Patil", email:"bhushan@gmail.com", deptno:"M03"},
+                        {empno:17, ename:"Chaitanya Kumar", email:"chaitanya@gmail.com", deptno:"I02"}
+                     ]
+
+            $("#modify").prop("disabled",true);
+            $("#remove").prop("disabled",true);
+            $("#add").prop("disabled",true);
+            $("#viewall").prop("disabled",false);
+            $("#viewdeptid").prop("disabled",false);
+
+            function blurEvent(output){
+                for(let i=0; i<employee.length; i++){
+                    if(employee[i].empno == output.input){
+                        output.input=employee[i];
+                        //console.log(input);
+                        output.status= true;
+                    }
+
+                }
+                return false;
+            }
+
+            function addLogic(input){
+                for(let i=0; i<employee.length; i++){
+                    if(employee[i].empno != input.empno){
+                        if(input.empno !="" && input.ename !=""&& input.email !="" && input.deptno !=""){
+                            employee.push(input);
+                            return true;
+                        }else{
+                            window.alert("Enter all the information !!!");
+                            break;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            function modifyLogic(output){
+                for(let i=0; i<employee.length; i++){
+                    if(employee[i].empno == output.input.empno){
+                        if(output.input.empno !="" && output.input.ename !=""&& output.input.email !="" && output.input.deptno !=""){
+                            employee[i]=output.input;
+                            output.status=true;
+                        }else{
+                            window.alert("Enter all the information !!!");
+                            break;
+                        }
+                    }
+                }
+                
+            }
+
+            function removeLogic(output){
+                for(let i=0; i<employee.length; i++){
+                    if(employee[i].empno == output.input.empno){
+                        
+                        employee.splice(i,1);
+                        output.status=true;
+                        break;
+                    }
+                }
+
+            }
+
+            function viewAllLogic(){
+                let content="";
+                for(let i=0; i<employee.length; i++){
+                    content+="<br>"+"index : "+i+" =>["+employee[i].empno+", "+employee[i].ename+", "+employee[i].email+", "+employee[i].deptno+"]";
+                }
+                $("#content").html(content); 
+            }
+            function viewDeptIdLogic(){
+                let content="";
+                for(let i=0; i<employee.length; i++){
+                    content+="<br>"+"index : "+i+" =>Department Id :"+employee[i].deptno;
+                }
+                $("#content").html(content);
+            }
+
+            $("#empno").click(()=>{
+                console.log("click")
+                $("#content").html("show content");  
+                $("#status").html("");
+                $("#modify").prop("disabled",true);
+                $("#remove").prop("disabled",true);
+                $("#add").prop("disabled",true);
+            })
+
+            $("#empno").blur(()=>{
+                console.log("blur click");
+                const input=$("#empno").val();
+                
+                let output={status:false,input};
+                blurEvent(output);
+                console.log(output);
+                if(output.status){
+                    $("#status").html("Record Found!!!");
+                    //updating the contents
+                    $("#ename").val(output.input.ename);
+                    $("#email").val(output.input.email);
+                    $("#deptno").val(output.input.deptno);
+                    //disabled the text and button
+                    $("#empno").prop("disabled",true);
+                    
+                    $("#modify").prop("disabled",false);
+                    $("#remove").prop("disabled",false);
+                    $("#add").prop("disabled",true);
+                    $("#viewall").prop("disabled",true);
+                    $("#viewdeptid").prop("disabled",true);
+                }else{
+                    $("#status").html("Record not found!!!");
+                    $("#modify").prop("disabled",true);
+                    $("#remove").prop("disabled",true);
+                    $("#add").prop("disabled",false);
+                    $("#viewall").prop("disabled",true);
+                    $("#viewdeptid").prop("disabled",true);
+
+                }
+
+            })
+            $("#add").click(()=>{
+                console.log("add click");
+                let input = {empno:$("#empno").val(), ename:$("#ename").val(), email:$("#email").val(),deptno:$("#deptno").val()}
+                let output = addLogic(input);
+                if(output){
+                    $("#status").html("Record added successfully !!!"); 
+                    $("#add").prop("disabled",true);
+                    $("#viewall").prop("disabled",false);
+                    $("#viewdeptid").prop("disabled",false);
+                }else{
+                    $("#status").html("Insufficient Information !!!"); 
+                }
+            })
+            $("#modify").click(()=>{
+                console.log("modify click");
+                let input = {empno:$("#empno").val(), ename:$("#ename").val(), email:$("#email").val(),deptno:$("#deptno").val()}
+                let output={status:false, input};
+                modifyLogic(output)
+                if(output.status){
+                    $("#status").html("Record modified successfully !!!"); 
+                    $("#empno").val("");
+                    $("#ename").val("");
+                    $("#email").val("");
+                    $("#deptno").val("")
+                    $("#empno").prop("disabled",false);
+                    $("#viewall").prop("disabled",false);
+                    $("#viewdeptid").prop("disabled",false);
+                }else{
+                    $("#status").html("Record not modified !!!"); 
+                }
+            })
+            $("#remove").click(()=>{
+                console.log("remove click");
+                let input = {empno:$("#empno").val(), ename:$("#ename").val(), email:$("#email").val(),deptno:$("#deptno").val()}
+                let output={status:false, input};
+                removeLogic(output);
+                if(output.status){
+                    $("#status").html("Record removed successfully !!!"); 
+                    $("#empno").prop("disabled",false);
+                    $("#viewall").prop("disabled",false);
+                    $("#viewdeptid").prop("disabled",false);
+                    $("#empno").val("");
+                    $("#ename").val("");
+                    $("#email").val("");
+                    $("#deptno").val("")
+                }else{
+                    $("#status").html("Record not removed !!!");
+                }
+            })
+
+            $("#viewall").click(()=>{
+                console.log("view all click");
+                viewAllLogic();
+            })
+
+            $("#viewdeptid").click(()=>{
+                viewDeptIdLogic();
+            })
+
+
+
+
+        })
+
+
+
+
+    </Script>
+</head>
+<body>
+<pre>  
+    <span>   Enter the Employee ID         :</span><input type="text" id="empno"><span id="status"></span><br>
+    <span>   Enter the Employee Name       :</span><input type="text" id="ename" ><br>
+    <span>   Enter the Employee Email      :</span><input type="text" id="email"><br>
+    <span>Enter the Employee Department Id :</span><input type="text" id="deptno"><br>
+</pre>
+    <input type="button" value="add" id="add">
+    <input type="button" value="Modify" id="modify">
+    <input type="button" value="Remove" id="remove">
+    <input type="button" value="View All" id="viewall">
+    <input type="button" value="View all Dept Id" id="viewdeptid"><br><br>
+    <span id="content">Show Content</span>
+</body>
+</html>
